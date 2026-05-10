@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Business Management System</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="app-body">
+    <aside class="sidebar">
+      <div class="brand dashboard-brand">
+        <img src="/images/bms-logo.png" alt="BMS Logo" class="dashboard-logo" />
+
+        <div class="brand-text">
+          <h3>BMS</h3>
+          <p>Business Management System</p>
+        </div>
+      </div>
+      <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+      <button class="nav-btn" data-section="inventory">Inventory</button>
+      <button class="nav-btn" data-section="sales">Sales</button>
+      <button class="nav-btn" data-section="expenses">Expenses</button>
+      <button class="nav-btn" data-section="customers">Customers</button>
+      <button class="nav-btn" data-section="employees">Employees</button>
+      <button class="nav-btn" data-section="reports">Reports</button>
+      <button class="logout" id="logoutBtn">Logout</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p>Complete business operations overview</p>
+        </div>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+      </header>
+
+      <section id="dashboard" class="section active">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="panel-grid">
+          <div class="panel">
+            <h2>Monthly Sales & Profit</h2>
+            <canvas id="monthlyChart"></canvas>
+          </div>
+          <div class="panel">
+            <h2>Low Stock Alerts</h2>
+            <div id="lowStockList"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Recent Transactions</h2>
+          <div class="table-wrap"><table id="recentTable"></table></div>
+        </div>
+      </section>
+
+      <section id="inventory" class="section">
+        <div class="section-head">
+          <h2>Inventory Management</h2>
+          <button class="btn primary" onclick="openProductModal()">
+            Add Product
+          </button>
+        </div>
+        <input
+          class="search"
+          placeholder="Search inventory..."
+          oninput="filterTable('inventoryTable', this.value)"
+        />
+        <div class="table-wrap"><table id="inventoryTable"></table></div>
+      </section>
+
+      <section id="sales" class="section">
+        <div class="section-head">
+          <h2>Sales Management</h2>
+          <button class="btn primary" onclick="openSaleModal()">
+            Create Sale
+          </button>
+        </div>
+        <input
+          class="search"
+          placeholder="Search sales..."
+          oninput="filterTable('salesTable', this.value)"
+        />
+        <div class="table-wrap"><table id="salesTable"></table></div>
+      </section>
+
+      <section id="expenses" class="section">
+        <div class="section-head">
+          <h2>Expense Management</h2>
+          <button class="btn primary" onclick="openExpenseModal()">
+            Add Expense
+          </button>
+        </div>
+        <input
+          class="search"
+          placeholder="Search expenses..."
+          oninput="filterTable('expensesTable', this.value)"
+        />
+        <div class="table-wrap"><table id="expensesTable"></table></div>
+      </section>
+
+      <section id="customers" class="section">
+        <div class="section-head">
+          <h2>Customer Management</h2>
+          <button class="btn primary" onclick="openCustomerModal()">
+            Add Customer
+          </button>
+        </div>
+        <input
+          class="search"
+          placeholder="Search customers..."
+          oninput="filterTable('customersTable', this.value)"
+        />
+        <div class="table-wrap"><table id="customersTable"></table></div>
+      </section>
+
+      <section id="employees" class="section">
+        <div class="section-head">
+          <h2>Employee Management</h2>
+          <button class="btn primary" onclick="openEmployeeModal()">
+            Add Employee
+          </button>
+        </div>
+        <input
+          class="search"
+          placeholder="Search employees..."
+          oninput="filterTable('employeesTable', this.value)"
+        />
+        <div class="table-wrap"><table id="employeesTable"></table></div>
+      </section>
+
+      <section id="reports" class="section">
+        <div class="reports-header">
+          <div>
+            <h2>Reports Analytics</h2>
+            <p>Complete business operations overview and analytics</p>
+          </div>
+
+          <div class="reports-actions">
+            <input type="date" class="date-filter" />
+            <button class="btn primary" onclick="refreshReports()">
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="premium-stats-grid">
+          <div class="premium-card sales">
+            <div class="premium-card-top">
+              <div>
+                <span>Total Sales</span>
+                <h3 id="salesAmount">₱0.00</h3>
+              </div>
+
+              <div class="icon-circle blue">📈</div>
+            </div>
+
+            <canvas id="salesMiniChart"></canvas>
+          </div>
+
+          <div class="premium-card profit">
+            <div class="premium-card-top">
+              <div>
+                <span>Gross Profit</span>
+                <h3 id="profitAmount">₱0.00</h3>
+              </div>
+
+              <div class="icon-circle green">💰</div>
+            </div>
+
+            <canvas id="profitMiniChart"></canvas>
+          </div>
+
+          <div class="premium-card expense">
+            <div class="premium-card-top">
+              <div>
+                <span>Total Expenses</span>
+                <h3 id="expenseAmount">₱0.00</h3>
+              </div>
+
+              <div class="icon-circle orange">💳</div>
+            </div>
+
+            <canvas id="expenseMiniChart"></canvas>
+          </div>
+
+          <div class="premium-card net">
+            <div class="premium-card-top">
+              <div>
+                <span>Net Profit</span>
+                <h3 id="netAmount">₱0.00</h3>
+              </div>
+
+              <div class="icon-circle purple">🏆</div>
+            </div>
+
+            <canvas id="netMiniChart"></canvas>
+          </div>
+        </div>
+
+        <div class="export-wrapper">
+          <div class="export-title">
+            <h3>Export Reports</h3>
+            <p>Download business reports instantly</p>
+          </div>
+
+          <div class="export-grid">
+            <button class="export-card" onclick="downloadReport('sales')">
+              <div class="export-icon green">📊</div>
+              <div>
+                <h4>Sales Excel</h4>
+                <span>Export all sales</span>
+              </div>
+            </button>
+
+            <button class="export-card" onclick="downloadReport('expenses')">
+              <div class="export-icon red">📕</div>
+              <div>
+                <h4>Expenses Excel</h4>
+                <span>Export expenses</span>
+              </div>
+            </button>
+
+            <button class="export-card" onclick="downloadReport('inventory')">
+              <div class="export-icon blue">📦</div>
+              <div>
+                <h4>Inventory Excel</h4>
+                <span>Export inventory</span>
+              </div>
+            </button>
+
+            <button class="export-card" onclick="window.print()">
+              <div class="export-icon purple">🖨️</div>
+              <div>
+                <h4>Save as PDF</h4>
+                <span>Print report</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <div class="analytics-head">
+              <h3>Sales Overview</h3>
+            </div>
+
+            <canvas id="reportChart"></canvas>
+          </div>
+
+          <div class="analytics-card">
+            <div class="analytics-head">
+              <h3>Profit & Loss Overview</h3>
+            </div>
+
+            <div id="profitLossBox"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

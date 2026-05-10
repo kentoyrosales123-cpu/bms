@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login | BMS</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="login-body">
+    <form class="login-card" id="loginForm">
+      <a href="/" class="login-logo">
+        <img src="images/bms-logo.png" alt="BMS Logo" />
+      </a>
+      <h1>Admin Login</h1>
+      <p>Sign in to manage your business system.</p>
+      <label>Email</label>
+      <input type="email" id="email" value="admin@example.com" required />
+      <label>Password</label>
+      <input type="password" id="password" value="admin12345" required />
+      <button class="btn primary full" type="submit">Login</button>
+      <small id="loginMessage"></small>
+    </form>
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const message = document.getElementById("loginMessage");
+          message.textContent = "Logging in...";
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: email.value,
+              password: password.value,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            message.textContent = data.message || "Login failed";
+            return;
+          }
+          localStorage.setItem("bms_token", data.token);
+          localStorage.setItem("bms_user", JSON.stringify(data.user));
+          location.href = "/dashboard";
+        });
+    </script>
+  </body>
+</html>
