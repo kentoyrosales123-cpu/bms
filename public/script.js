@@ -50,11 +50,11 @@ function setSection(id) {
 }
 
 if (isDashboardPage) {
-  document
-    .querySelectorAll(".nav-btn")
-    .forEach((btn) =>
-      btn.addEventListener("click", () => setSection(btn.dataset.section)),
-    );
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setSection(btn.dataset.section);
+    });
+  });
 }
 const logoutBtn = document.getElementById("logoutBtn");
 const menuToggle = document.getElementById("menuToggle");
